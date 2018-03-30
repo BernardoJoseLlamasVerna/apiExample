@@ -11,7 +11,9 @@ class LessonsController extends Controller
     {
         $lessons = Lesson::all();
 
-        return response()->json(['data'=>$lessons->toArray()], 200);
+        return response()->json([
+            'data'=>$this->transformCollection($lessons)
+        ], 200);
     }
 
     public function show($id)
@@ -28,6 +30,21 @@ class LessonsController extends Controller
         }
 
         return response()->json(['data'=>$lesson->toArray()], 200);
+
+    }
+
+    private function transformCollection($lessons)
+    {
+        return array_map([$this, 'transform'], $lessons->toArray());
+    }
+
+    private function transform($lesson)
+    {
+        return [
+            'title'  => $lesson['title'],
+            'body'   => $lesson['body'],
+            'active' => (boolean) $lesson['some_bool']
+        ];
 
     }
 

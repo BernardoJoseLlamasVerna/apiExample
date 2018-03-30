@@ -2,17 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Transformers\LessonTransformer;
 use App\Lesson;
 use Illuminate\Http\Request;
 
 class LessonsController extends Controller
 {
+    protected $lessonTransformer;
+
+    function __construct(LessonTransformer $lessonTransformer)
+    {
+        $this->lessonTransformer = $lessonTransformer;
+    }
+
     public function index()
     {
         $lessons = Lesson::all();
 
         return response()->json([
-            'data'=>$this->transformCollection($lessons)
+            'data'=>$this->lessonTransformer->transformCollection($lessons->all())
         ], 200);
     }
 
@@ -29,23 +37,9 @@ class LessonsController extends Controller
 
         }
 
-        return response()->json(['data'=>$lesson->toArray()], 200);
-
-    }
-
-    private function transformCollection($lessons)
-    {
-        return array_map([$this, 'transform'], $lessons->toArray());
-    }
-
-    private function transform($lesson)
-    {
-        return [
-            'title'  => $lesson['title'],
-            'body'   => $lesson['body'],
-            'active' => (boolean) $lesson['some_bool']
-        ];
-
+        return response()->json(
+            ['data'=>$this->lessonTransformer->transform($lesson)], 200
+        );
     }
 
 }

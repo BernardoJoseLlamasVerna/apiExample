@@ -1,10 +1,17 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: berni
+ * Date: 31/03/18
+ * Time: 17:56
+ */
 
 namespace Tests\Feature;
 
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-
+use Illuminate\Foundation\Testing\WithoutMiddleware;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 class ExampleTest extends TestCase
 {
     /**
@@ -15,7 +22,6 @@ class ExampleTest extends TestCase
     public function testBasicTest()
     {
         $response = $this->get('/');
-
         $response->assertStatus(200);
     }
 }

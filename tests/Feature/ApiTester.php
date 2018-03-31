@@ -11,8 +11,12 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 use Faker\Factory as Faker;
+use BadMethodCallException;
 
-class ApiTester extends TestCase
+use Illuminate\Foundation\Testing\WithoutMiddleware;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+
+abstract class ApiTester extends TestCase
 {
     protected $fake;
     protected $times =1;
@@ -29,17 +33,11 @@ class ApiTester extends TestCase
         $this->app['artisan']->call('migrate');
     }
 
-    protected function getJson($uri)
+    protected function getJson($uri, $method ='GET', $parameters= [])
     {
-        return json_decode($this->call('GET', $uri)->getContent());
+        return json_decode($this->call($method, $uri, $parameters)->getContent());
     }
 
-    protected function times($count)
-    {
-        $this->times = $count;
-
-        return $this;
-    }
 
     protected function assertObjectHasAttributes()
     {
@@ -51,6 +49,11 @@ class ApiTester extends TestCase
             $this->assertObjectHasAttribute($attribute, $object);
         }
 
+    }
+
+    protected function getStub()
+    {
+        throw new BadMethodCallException('Create your own getStub method to declare your fields.');
     }
 
 }

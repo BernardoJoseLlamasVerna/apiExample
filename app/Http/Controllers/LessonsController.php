@@ -20,12 +20,15 @@ class LessonsController extends ApiController
         $this->middleware('auth.basic', ['only' => 'store']);
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $lessons = Lesson::all();
+        //$lessons = Lesson::all();
 
-        return $this->respond([
-            'data'=>$this->lessonTransformer->transformCollection($lessons->all())
+        $limit = $request->input('limit', 3);
+        $lessons = Lesson::paginate($limit);
+
+        return $this->respondWithPagination($lessons, [
+            'data' => $this->lessonTransformer->transformCollection($lessons->all())
         ]);
     }
 
